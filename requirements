@@ -1,0 +1,22 @@
+A user
+
+1. can upload a twit
+
+2. can update a twit uploaded by him/her
+
+3. can see only twitters uploaded by him/her
+
+4. can login/logout
+
+DOMAIN 
+1. "/"
+    1) "GET"
+    => send json of twits in response
+    
+    2) "POST"
+    => request with json file of twit
+    => send json of twits in response
+
+2. "/user/?id="
+    1) "GET"
+    => send json of twits of the user in response
