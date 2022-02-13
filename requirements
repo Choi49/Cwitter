@@ -1,22 +1,42 @@
 A user
 
-1. can upload a twit
+1. can upload a tweet
 
-2. can update a twit uploaded by him/her
+2. can update a tweet uploaded by him/her
 
-3. can see only twitters uploaded by him/her
+3. can see only tweets uploaded by him/her
 
-4. can login/logout
+4. can delete tweet uploaded by him/her
+
+5. can login/logout
 
 DOMAIN 
 1. "/"
     1) "GET"
-    => send json of twits in response
+    => send main page
+    
+2. "/tweets/"
+    1) "GET"
+    => send all tweets in json
+    
     
     2) "POST"
-    => request with json file of twit
-    => send json of twits in response
-
-2. "/user/?id="
+    => create new tweet
+    => request with json file of a tweet
+    => send json of the tweet in response
+    
+3. "/tweets?username="
     1) "GET"
-    => send json of twits of the user in response
+    => send tweets upladed by the user in parameter
+    
+4. "/tweets/:id"
+    1) "GET"
+    => get specific tweet
+    
+    2) "PUT"
+    => update the sepcific tweet
+    request with text file
+    response with json of the tweet
+    
+    3) "DELETE"
+    => delte the specific tweet
