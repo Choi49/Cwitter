@@ -1,45 +1,58 @@
+import * as userRepository from './auth.js';
 
 let tweets = [
     {
         id: '1',
         text: 'test test',
         createdAt: Date.now().toString(),
-        name: 'Choi',
-        username: 'Choi',
-        url: 'https://wedgetwhats.com/app/uploads/2019/11/free-profile-photo-whatsapp-1.png',
+        userId:'1',
     },
     {
         id: '2',
         text: 'cweet입니다 :)',
         createdAt: Date.now().toString(),
-        name: 'Bob',
-        username: 'Bob',
-        url: 'https://wedgetwhats.com/app/uploads/2019/11/free-profile-photo-whatsapp-1.png',
+        userId: '1',
     }    
 ]
 
 export async function getAll() {
-    return tweets;
+    //Promise.all을 이용하면 병렬적으로 비동기 실행이 가능
+    //() 안에 모든 실행이 끝났을 경우에 Promise.all이 끝남
+    //그냥 await로 하는 것 보다 빠름. 왜냐면 await로 할 경우 모든 async를 하나하나 기다릴 것이므로
+    return Promise.all(
+        tweets.map(async(tweet) => {
+            const {username, name, url} = await userRepository.findById(
+                tweet.userId
+            );
+            return {...tweet, username, name, url};
+        })
+    )
 }
 
 export async function getAllByUsername(username) {
-    return tweets.filter((tweet) => tweet.username);
+    return getAll().then((tweets) =>
+        tweets.filter((tweet) => tweet.username === username)
+        );
 }
 
 export async function getById(id) {
-    return tweets.find((tweet) => tweet.id === id);
+    const found = tweets.find((tweet) => tweet.id === id);
+    if(!found) {
+        return null;
+    }
+    const { username, name, url} = await userRepository.findById(found.userId);
+    return { ...found, username, name, url};
 }
 
-export async function create(text, name, username){
+export async function create(text, userId){
     const tweet = {
         id : Date.now().toString(),
         text,
         createdAt: new Date(),
-        name,
-        username,
+        userId,
     };
     tweets = [tweet, ...tweets];
-    return tweet;
+    return getById(tweet.id);
 
 }
 
@@ -48,7 +61,7 @@ export async function update(id, text) {
     if(tweet) {
         tweet.text =text;
     }
-    return text;
+    return getById(tweet.id);
 }
 
 export async function remove(id) {

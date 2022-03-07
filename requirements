@@ -40,3 +40,45 @@ DOMAIN
     
     3) "DELETE"
     => delte the specific tweet
+
+
+5. "/auth/signup"
+    1) "POST"
+    signup for a new user
+    => request : 
+        {
+            username,
+            password,
+            name,
+            email,
+            url
+        }
+
+        response :
+        {
+            token,
+            username
+        }
+
+6. "/auth/login"
+    1) "POST"
+    login for a registered user
+    => request :
+        {
+            username,
+            password
+        }
+
+        response :
+        {
+            token,
+            username
+        }
+
+7. "/auth/me"
+    check token is still valid for a logined user
+    1) "GET":
+    => {
+            token,
+            username
+        }
