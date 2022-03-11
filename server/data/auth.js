@@ -1,32 +1,26 @@
+import {db} from '../db/database.js'
+
 // password : abcd1234
-let users = [
-  {
-    id: '1',
-    username: 'bob',
-    password: '$2b$12$G9xf8SFq3oTEgdj7ozHQ/uhDOyeQcUEDU8tnOcvpvApuadr3nE5Vm',
-    name: 'Bob',
-    email: 'bob@gmail.com',
-    url: 'https://widgetwhats.com/app/uploads/2019/11/free-profile-photo-whatsapp-1.png',
-  },
-  {
-    id: '2',
-    username: 'choi',
-    password: '$2b$12$G9xf8SFq3oTEgdj7ozHQ/uhDOyeQcUEDU8tnOcvpvApuadr3nE5Vm',
-    name: 'choi',
-    email: 'choi@gmail.com',
-  },
-];
 
 export async function findByUsername(username) {
-  return users.find((user) => user.username === username);
+  return db.execute('SELECT * FROM users WHERE username=?',[username])
+  //result는 이중배열이고 첫번째 정보만 필요함
+  .then((result) => result[0][0]);
 }
 
 export async function findById(id) {
-  return users.find((user) => user.id === id);
+  return db.execute('SELECT * FROM users WHERE id=?',[id])
+  //result는 이중배열이고 첫번째 정보만 필요함
+  .then((result) => result[0][0]);
 }
 
 export async function createUser(user) {
-  const created = { ...user, id: Date.now().toString() };
-  users.push(created);
-  return created.id;
+  const {username, password, name, email, url} = user;
+  console.log(typeof(url));
+  return db.execute('INSERT INTO users (username, password, name, email, url) VALUES (?,?,?,?,?)', 
+    [username, password, name, email, url]
+  )
+  .then((result) => {
+    console.log(result);
+  })
 }
