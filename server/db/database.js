@@ -1,13 +1,17 @@
-import { config }  from '../config.js';
-import mysql from 'mysql2';
+import MongoDb from "mongodb";
+import { config } from "../config.js";
 
-const pool = mysql.createPool({
-  host: config.db.host,
-  user: config.db.user,
-  databse: config.db.database,
-  password: config.db.password,
-})
+let db;
+export async function connectDB() {
+  return MongoDb.MongoClient.connect(config.db.host).then(
+    (client) => {db = client.db()}
+  );
+}
 
+export function getUsers() {
+  return db.collection("users");
+}
 
-//비동기적으로 처리할 거기 때문에 promise를 리턴함
-export const db = pool.promise();
+export function getTweets() {
+  return db.collection("tweets");
+}

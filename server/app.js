@@ -5,11 +5,11 @@ import cors from "cors";
 import helmet from "helmet";
 import tweetsRouter from "./routes/tweets.js";
 import authRouter from "./routes/auth.js";
-import {config } from "./config.js";
+import { config } from "./config.js";
 import "express-async-errors";
 import { Server } from "socket.io";
-import {initSocket} from './connection/socket.js';
-import { db } from "./db/database.js";
+import { initSocket } from "./connection/socket.js";
+import { connectDB } from "./db/database.js";
 
 // http://expressjs.com/en/resources/middleware/morgan.html
 const app = express();
@@ -53,12 +53,14 @@ app.use((req, res, next) => {
   res.sendStatus(404);
 });
 
-
 app.use((error, req, res, next) => {
   console.error(error);
   res.sendStatus(500);
 });
 
-db.getConnection().then((connection) => console.log(connection))
-const server = app.listen(config.host.port);
-initSocket(server);
+connectDB()
+  .then(() => {
+    const server = app.listen(config.host.port);
+    initSocket(server);
+  })
+  .catch(console.error);

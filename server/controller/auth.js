@@ -31,11 +31,13 @@ export async function login(req, res) {
   const { username, password } = req.body;
   const user = await userRepository.findByUsername(username);
   if (!user) {
+    console.log(1);
     return res.status(401).json({ message: 'Invalid user or password' });
   }
   //hashed의 경우 salt + hashed password로 구성되어 있으므로 compare할 떄 salt가 없어도 가능함
   const isValidPassword = await bcrypt.compare(password, user.password);
   if (!isValidPassword) {
+    console.log(2);
     return res.status(401).json({ message: 'Invalid user or password' });
   }
   const token = createJwtToken(user.id);

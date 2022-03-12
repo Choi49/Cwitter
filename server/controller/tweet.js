@@ -27,17 +27,18 @@ export async function createTweet(req, res, next) {
   const { text } = req.body;
   const tweet = await tweetRepository.create(text, req.userId);
   res.status(201).json(tweet);
-  getSocketIO.emit('tweets', tweet);
+  getSocketIO().emit('tweets', tweet);
 }
 
 export async function updateTweet(req, res, next) {
+  console.log(req);
   const id = req.params.id;
   const text = req.body.text;
   const tweet = await tweetRepository.getById(id);
   if (!tweet) {
     return res.status(404).json({ message: `Tweet not found: ${id}` });
   }
-  if (tweet.userId !== req.userId) {
+  if (tweet.userId.toString() !== req.userId.toString()) {
     return res.sendStatus(403);
   }
   const updated = await tweetRepository.update(id, text);
@@ -50,7 +51,7 @@ export async function deleteTweet(req, res, next) {
   if (!tweet) {
     return res.status(404).json({ message: `Tweet not found: ${id}` });
   }
-  if (tweet.userId !== req.userId) {
+  if (tweet.userId.toString() !== req.userId.toString()) {
     return res.sendStatus(403);
   }
   await tweetRepository.remove(id);
